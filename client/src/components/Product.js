@@ -5,12 +5,13 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteProduct } from "../redux/actions/productsActions";
 import { Link } from "react-router-dom";
 
 export default function Product({ el }) {
   const dispatch=useDispatch()
+  const user=useSelector(state=>state.userReducer.currentUser)
   return (
     <div style={{margin:"10px"}}>
     <Card sx={{ maxWidth: 345 }}>
@@ -25,13 +26,13 @@ export default function Product({ el }) {
           {el.name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {el.createDate}
+          {el.createDate} by {el.user.fullName}
         </Typography>
       </CardContent>
-      <CardActions>
+     {user&&user.role=="admin"?<CardActions>
        <Link to ={`/edit/${el._id}`} ><Button size="small" >Edit</Button></Link> 
         <Button size="small" onClick={()=>dispatch(deleteProduct(el._id))}>Delete</Button>
-      </CardActions>
+      </CardActions>:null}
     </Card>
     </div>
   );

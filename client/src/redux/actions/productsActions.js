@@ -39,9 +39,12 @@ export const deleteProduct = (idProduct) => async (dispatch) => {
 
 export const addProduct = (newProduct, navigate) => async (dispatch) => {
   try {
+    const opts = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     const response = await axios.post(
       "http://localhost:5000/product/addProduct",
-      newProduct
+      newProduct,opts
     );
     console.log(response);
     dispatch({ type: ADD_PRODUCT_SUCCESS });

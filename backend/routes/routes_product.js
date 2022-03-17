@@ -1,15 +1,16 @@
 const express = require("express");
 const Product = require("../models/Mproduct");
 const router = express.Router();
+const isAuth=require("../middlewares/passport")
 
 //test
 router.get("/test", (req, res) => {
   res.send("hello router");
 });
 //addNewProduct
-router.post("/addProduct", async (req, res) => {
+router.post("/addProduct",isAuth(), async (req, res) => {
   try {
-    const newProduct = new Product(req.body);
+    const newProduct = new Product({...req.body,user:req.user._id});
     await newProduct.save();
     res.send({ product: newProduct, message: "product succesffuly" });
   } catch (err) {
@@ -19,7 +20,7 @@ router.post("/addProduct", async (req, res) => {
 //getAllProducts
 router.get("/", async (req, res) => {
   try {
-    const allProducts = await Product.find({});
+    const allProducts = await Product.find({}).populate("user","fullName");
     res.send({ allProducts });
   } catch (err) {
     res.status(400).send(err.message);

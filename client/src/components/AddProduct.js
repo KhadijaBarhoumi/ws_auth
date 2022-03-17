@@ -19,10 +19,12 @@ const AddProduct = () => {
   const navigate=useNavigate()
   const dispatch = useDispatch();
   const theme = createTheme();
+ 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
+
     console.log({
       name: data.get("name"),
       price: data.get("price"),
@@ -89,6 +91,7 @@ const AddProduct = () => {
                 id="qte"
                 autoComplete="current-password"
               />
+              
 
               <Button
                 type="submit"

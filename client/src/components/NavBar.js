@@ -11,11 +11,18 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/actions/userActions";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settingsGuest = ["Login"];
 
 const NavBar = () => {
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.userReducer.currentUser);
+  const token = localStorage.getItem("token");
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -33,6 +40,10 @@ const NavBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const handleCloseUserMenuLog = () => {
+    dispatch(logout());
+    setAnchorElUser(null);
+  };
 
   return (
     <AppBar position="static">
@@ -44,7 +55,7 @@ const NavBar = () => {
             component="div"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
-            LOGO
+            {currentUser && currentUser.fullName}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -89,7 +100,7 @@ const NavBar = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
-            LOGO
+            {currentUser && currentUser.fullName}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
@@ -102,11 +113,13 @@ const NavBar = () => {
               </Button>
             ))}
           </Box>
-
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="https://i.pinimg.com/736x/4b/cd/33/4bcd33ca4155ff5519bf8019a955ba73.jpg" />
+                <Avatar
+                  alt="Remy Sharp"
+                  src="https://i.pinimg.com/736x/4b/cd/33/4bcd33ca4155ff5519bf8019a955ba73.jpg"
+                />
               </IconButton>
             </Tooltip>
             <Menu
@@ -125,11 +138,25 @@ const NavBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              {token
+                ? settings.map((el) =>
+                    el == "Logout" ? (
+                      <MenuItem key={el} onClick={handleCloseUserMenuLog}>
+                        <Typography textAlign="center">{el}</Typography>
+                      </MenuItem>
+                    ) : (
+                      <MenuItem key={el} onClick={handleCloseUserMenu}>
+                        <Typography textAlign="center">{el}</Typography>
+                      </MenuItem>
+                    )
+                  )
+                : settingsGuest.map((el) => (
+                    <MenuItem key={el} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">
+                        <Link to="/signin">{el}</Link>
+                      </Typography>
+                    </MenuItem>
+                  ))}
             </Menu>
           </Box>
         </Toolbar>

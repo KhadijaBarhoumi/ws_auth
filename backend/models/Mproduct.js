@@ -5,7 +5,7 @@ const productSchema= new mongoose.Schema({
     qte:Number,
     image:String,
     createDate:{type:Date,default:Date.now()},
-    isActive:{type:Boolean,default:true}
-
+    isActive:{type:Boolean,default:true},
+    user:{type:mongoose.Schema.Types.ObjectId,ref:"user"}
 })
 module.exports=Product=mongoose.model("product",productSchema)
